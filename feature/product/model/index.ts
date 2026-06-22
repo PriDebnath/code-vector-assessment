@@ -1,10 +1,10 @@
-import { boolean, pgTable, serial, text, timestamp, varchar, numeric, index } from "drizzle-orm/pg-core";
+import { boolean, pgTable, serial, text, timestamp, varchar,integer, index } from "drizzle-orm/pg-core";
 
 export const products = pgTable("products", {
     id: serial().primaryKey(),
     name: varchar({ length: 200 }).notNull(),
     category: varchar({ length: 200 }).notNull(),
-    price: numeric().notNull(),
+    price: integer().notNull(),
     created_at: timestamp().defaultNow().notNull(),
     updated_at: timestamp().defaultNow().notNull(),
     is_deleted: boolean().default(false),
