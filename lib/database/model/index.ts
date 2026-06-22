@@ -1,11 +1,11 @@
-import { users } from "@/feature/user/model";
+import { products } from "@/feature/product/model";
 
 export const table = {
-    users,
+    products,
 } as const
 
 export type Table = typeof table
 
 export { 
-    users 
+    products 
 }  // drizzle look at it to maintain migration
