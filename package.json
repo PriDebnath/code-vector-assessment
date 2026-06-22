@@ -1,0 +1,47 @@
+{
+  "name": "a-k-assessment",
+  "version": "0.1.0",
+  "private": true,
+  "author": {
+    "name": "Pritam Debnath",
+    "email": "debnathpritam0802@gmail.com",
+    "url": "https://github.com/PriDebnath/portfolio-v2"
+  },
+  "scripts": {
+    "corepack:enable": "corepack enable",
+    "install:packages": "pnpm install",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:generate": "npx drizzle-kit generate ",
+    "db:migrate": "npx drizzle-kit migrate",
+    "db:studio": "npx drizzle-kit studio"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.4.2",
+    "drizzle-orm": "^0.45.2",
+    "framer-motion": "^12.40.0",
+    "lucide-react": "^1.20.0",
+    "next": "16.2.9",
+    "pg": "^8.22.0",
+    "react": "19.2.4",
+    "react-countup": "^6.5.3",
+    "react-dom": "19.2.4",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
