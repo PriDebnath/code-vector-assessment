@@ -3,6 +3,8 @@ import { products } from "../model";
 
 export type ProductInferInsert = typeof products.$inferInsert
 
+export type Product = typeof products.$inferSelect
+
 
 export const productCreateSchema = z.object({
     name: z.string().max(200) ,
