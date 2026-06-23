@@ -1,5 +1,5 @@
 {
-  "name": "a-k-assessment",
+  "name": "code-vector-assessment",
   "version": "0.1.0",
   "private": true,
   "author": {
@@ -16,7 +16,9 @@
     "lint": "eslint",
     "db:generate": "npx drizzle-kit generate ",
     "db:migrate": "npx drizzle-kit migrate",
-    "db:studio": "npx drizzle-kit studio"
+    "db:studio": "npx drizzle-kit studio",
+    "db:seed": "npx tsx lib/database/seed/seed.ts",
+    "db:seed:delete": "npx tsx lib/database/seed/seed-delete.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
@@ -42,6 +44,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
+    "tsx": "^4.22.4",
     "typescript": "^5"
   }
 }

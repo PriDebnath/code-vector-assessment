@@ -1,4 +1,3 @@
-import { ENV } from "@/next.config";
 
 import { Pool } from "pg"
 import { drizzle } from "drizzle-orm/node-postgres"
@@ -20,4 +19,4 @@ export const connectDB = async () => {
         process.exit(1)
     }
  }
-
+connectDB()
