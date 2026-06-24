@@ -4,12 +4,12 @@ import { products, table } from "../model";
 import { prefix } from "../seed/constant";
 
 async function deleteSeed() {
-  console.time("delete seeding");
-
+  const key ="Deleting completed in"
+  console.time(key);
   await db.delete(table.products)
     .where(ilike(table.products.name, `${prefix}%`))
 
-  console.timeEnd("delete seeding");
+  console.timeEnd(key);
   process.exit(1)
 }
 

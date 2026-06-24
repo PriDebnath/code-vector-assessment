@@ -4,7 +4,8 @@ import { generate_count, prefix } from "./constant";
 
 
 async function seed() {
-  console.time("seeding");
+  const key ="Seeding completed in"
+  console.time(key);
 
   await db.execute(sql`
     INSERT INTO products (name, category, price, created_at, updated_at)
@@ -17,7 +18,7 @@ async function seed() {
     FROM generate_series(1, ${generate_count}) as gs;
   `);
 
-  console.timeEnd("seeding");
+  console.timeEnd(key);
   process.exit(1)
 
 }
