@@ -4,7 +4,7 @@ import { generate_count, prefix } from "./constant";
 
 
 async function seed() {
-  const key ="Seeding completed in"
+  const key =`Inserted ${generate_count} items in`
   console.time(key);
 
   await db.execute(sql`

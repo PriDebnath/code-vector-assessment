@@ -18,8 +18,13 @@ export async function getProducts(params: Params) {
     // cursor base on unchangeable fields(created_at, id)
     if (cursor) {
         conditions.push(
-            sql`(${table.products.created_at}, ${table.products.id}) < (${cursor.created_at}, ${cursor.id})`
-        );
+            sql`
+                ${table.products.created_at} < ${cursor.created_at}
+                OR (
+                    ${table.products.created_at} = ${cursor.created_at}
+                    AND ${table.products.id} < ${cursor.id}
+                )
+            `);
     }
 
     const data = await db

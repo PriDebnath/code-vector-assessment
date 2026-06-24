@@ -12,11 +12,14 @@ export const products = pgTable("products", {
     return [
         index("index_products_created_at_id").on(
             table.created_at,
-            table.id),
+            table.id,
+            table.id.desc()
+        ),
         index("index_products_category_created_at_id").on(
             table.category,
             table.created_at,
-            table.id
+            table.id,
+            table.id.desc()
         ),
     ]
 })
