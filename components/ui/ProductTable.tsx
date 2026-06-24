@@ -61,10 +61,10 @@ export default function ProductTable({
   return (
     <div>
       {/* TABLE */}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead onClick={() => handleSort("name")} className="cursor-pointer">
+      <Table className="border-2 border-separate rounded-2xl overflow-hidden">
+        <TableHeader className="bg-muted-foreground p-0">
+          <TableRow className="font-extrabold">
+            <TableHead onClick={() => handleSort("name")} className="cursor-pointer font-extrabold">
               Name
             </TableHead>
             <TableHead onClick={() => handleSort("category")} className="cursor-pointer">
@@ -96,10 +96,10 @@ export default function ProductTable({
               <TableCell>{p.category}</TableCell>
               <TableCell>₹{p.price}</TableCell>
               <TableCell>
-                {new Date(p.created_at).toLocaleDateString()}
+                {new Date(p.created_at).toLocaleDateString("en-GB")}
               </TableCell>
               <TableCell>
-                {new Date(p.updated_at).toLocaleDateString()}
+                {new Date(p.updated_at).toLocaleDateString("en-GB")}
               </TableCell>
               <TableCell>
                 {p.is_deleted ? "Deleted" : "Active"}
