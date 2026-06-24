@@ -1,40 +1,45 @@
-import { asc, desc, sql } from "drizzle-orm";
-import { table } from "@/lib/database/model"
+import { table } from "@/lib/database/model";
 import { db } from "@/lib/database/connection"
+import { asc, desc, SQL, sql } from "drizzle-orm";
 import { Product } from "@/feature/product/schema/index"
 
 type Params = {
-    page?: number;
     limit?: number;
-    sortBy?: keyof Product;
-    order?: "asc" | "desc";
+    cursor?: Product;
+    category?: string;
 };
 
-export async function getProducts({
-    page = 1,
-    limit = 10,
-    sortBy = "created_at",
-    order = "desc",
-}: Params) {
-    const offset = (page - 1) * limit;
-
-    const orderFn = order === "asc" ? asc : desc;
+export async function getProducts(params: Params) {
+    const { limit = 10, cursor, category, } = params
+    const conditions: SQL[] = [];
+    if (category) {
+        conditions.push(sql`${table.products.category} = ${category}`);
+    }
+    // cursor base on unchangeable fields(created_at, id)
+    if (cursor) {
+        conditions.push(
+            sql`(${table.products.created_at}, ${table.products.id}) < (${cursor.created_at}, ${cursor.id})`
+        );
+    }
 
     const data = await db
         .select()
         .from(table.products)
-        .orderBy(orderFn(table.products[sortBy]))
-        .limit(limit)
-        .offset(offset);
+        .where(conditions.length ? sql.join(conditions, sql` AND `) : undefined)
+        .orderBy(
+            desc(table.products.created_at),
+            desc(table.products.id)
+        )
+        .limit(limit);
 
-    const [{ count }] = await db.select({
-        count: sql<number>`COUNT(*)`
-    }).from(table.products);
+    let nextCursor = null
+    if (data.length > 0) {
+        const lastIndex = data.length - 1
+        nextCursor = data[lastIndex]
+    }
 
     return {
         data,
-        total: count,
-        page,
-        limit,
+        nextCursor
     };
 }
