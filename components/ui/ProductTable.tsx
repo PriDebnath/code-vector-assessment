@@ -126,9 +126,25 @@ export default function ProductTable({
 
       {/* Pagination */}
       <div className="flex justify-center">
-        <Button asChild disabled={!nextCursor}>
-          <Link href={getNextLink()}>Next</Link>
+        <Button asChild >
+
+          <Link
+            href={buildQuery({
+              category: undefined,
+              cursor: undefined,
+            })}
+          >
+            Reset
+          </Link>
         </Button>
+
+        {nextCursor ? (
+          <Button asChild>
+            <Link href={getNextLink()}>Next</Link>
+          </Button>
+        ) : (
+          <Button disabled>Next</Button>
+        )}
       </div>
     </div>
   );

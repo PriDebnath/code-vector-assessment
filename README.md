@@ -1,8 +1,10 @@
 # Short note
 
 ## For frontend
-- Used nextjs framework to quikly complete the task.
-- Used shadcn ui and tailwind to quickly make ui with ai.
+- Used `nextjs` framework to quikly complete the task.
+- Used `shadcn ui` and `tailwind` to quickly make ui with ai.
+- Used `PostgreSQL` because it is more reliable (supabase)
+
 
 
 ## For backend
@@ -12,7 +14,12 @@
 ## AI usage
 - Used Ai to quickly generate ui.
 - Used Ai to avoid writing loop to seed data.
+
+
 ### chats with Ai
+https://chatgpt.com/share/6a3bc67b-d094-83ee-9f3c-116bd83075e2
+
+https://chatgpt.com/share/6a3bc972-4e98-83ee-a6c0-140bfad58c5a
 
 ---
 

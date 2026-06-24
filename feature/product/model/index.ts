@@ -1,4 +1,4 @@
-import { boolean, pgTable, serial, text, timestamp, varchar,integer, index } from "drizzle-orm/pg-core";
+import { boolean, pgTable, serial, text, timestamp, varchar, integer, index } from "drizzle-orm/pg-core";
 
 export const products = pgTable("products", {
     id: serial().primaryKey(),
@@ -11,14 +11,12 @@ export const products = pgTable("products", {
 }, (table) => {
     return [
         index("index_products_created_at_id").on(
-            table.created_at,
-            table.id,
+            table.created_at.desc(),
             table.id.desc()
         ),
         index("index_products_category_created_at_id").on(
             table.category,
-            table.created_at,
-            table.id,
+            table.created_at.desc(),
             table.id.desc()
         ),
     ]
