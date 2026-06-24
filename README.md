@@ -22,6 +22,9 @@ https://chatgpt.com/share/6a3bc67b-d094-83ee-9f3c-116bd83075e2
 https://chatgpt.com/share/6a3bc972-4e98-83ee-a6c0-140bfad58c5a
 
 ---
+## Task requirements
+https://docs.google.com/document/u/0/d/15qjI-o303wCZSkEVwsoUn-vKWM5nC2Xaz45XR0v6xAY/mobilebasic
+---
 
 ## 🔴 Demo
 
