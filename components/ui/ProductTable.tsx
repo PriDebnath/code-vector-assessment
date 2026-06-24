@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Table,
   TableHeader,
@@ -12,71 +13,105 @@ import {
 import { Button } from "@/components/ui/button";
 import { Product } from "@/feature/product/schema";
 
- 
-
 interface Props {
   data: Product[];
-  total: number;
-  page: number;
-  limit: number;
+  nextCursor: {
+    created_at: Date;
+    id: number;
+  } | null;
+  category?: string;
 }
+
+const categories = ["all", "electronics", "clothing", "books", "home"];
 
 export default function ProductTable({
   data,
-  total,
-  page,
-  limit,
+  nextCursor,
+  category,
 }: Props) {
-  const router = useRouter();
+  const pathname = usePathname();
   const params = useSearchParams();
 
-  const totalPages = Math.ceil(total / limit);
+  const history = params.get("history")
+    ? JSON.parse(decodeURIComponent(params.get("history")!))
+    : [];
 
-  function updateQuery(newParams: Record<string, string>) {
+  function encodeCursor(cursor: any) {
+    return encodeURIComponent(JSON.stringify(cursor));
+  }
+
+  function buildQuery(newParams: Record<string, string | undefined>) {
     const search = new URLSearchParams(params.toString());
 
     Object.entries(newParams).forEach(([key, value]) => {
-      search.set(key, value);
+      if (!value) {
+        search.delete(key);
+      } else {
+        search.set(key, value);
+      }
     });
 
-    router.push(`?${search.toString()}`);
+    return `${pathname}?${search.toString()}`;
   }
 
-  function handleSort(field: string) {
-    const currentOrder = params.get("order") || "desc";
-    const currentSort = params.get("sortBy");
+  function getNextLink() {
+    if (!nextCursor) return "#";
 
-    const newOrder =
-      currentSort === field && currentOrder === "asc"
-        ? "desc"
-        : "asc";
+    const currentCursor = history.length
+      ? history[history.length - 1]
+      : null;
 
-    updateQuery({
-      sortBy: field,
-      order: newOrder,
-      page: "1",
+    const newHistory = currentCursor
+      ? [...history, nextCursor]
+      : [nextCursor];
+
+    return buildQuery({
+      cursor: encodeCursor(nextCursor),
+      history: encodeURIComponent(JSON.stringify(newHistory)),
+    });
+  }
+
+  function getPrevLink() {
+    if (history.length === 0) return "#";
+
+    const newHistory = history.slice(0, -1);
+    const prevCursor = newHistory[newHistory.length - 1];
+
+    return buildQuery({
+      cursor: prevCursor ? encodeCursor(prevCursor) : undefined,
+      history: encodeURIComponent(JSON.stringify(newHistory)),
     });
   }
 
   return (
-    <div>
-      {/* TABLE */}
-      <Table className="border-2 border-separate rounded-2xl overflow-hidden">
-        <TableHeader className="bg-muted-foreground p-0">
-          <TableRow className="font-extrabold">
-            <TableHead onClick={() => handleSort("name")} className="cursor-pointer font-extrabold">
-              Name
-            </TableHead>
-            <TableHead onClick={() => handleSort("category")} className="cursor-pointer">
-              Category
-            </TableHead>
-            <TableHead onClick={() => handleSort("price")} className="cursor-pointer">
-              Price
-            </TableHead>
-            <TableHead onClick={() => handleSort("created_at")} className="cursor-pointer">
-              Created
-            </TableHead>
-            <TableHead>Updated</TableHead>
+    <div className="space-y-4 border-2 rounded-xl p-2">
+      <div className="flex gap-2 flex-wrap">
+        {categories.map((cat) => (
+          <Button
+            key={cat}
+            variant={category === cat ? "default" : "outline"}
+            asChild
+          >
+            <Link
+              href={buildQuery({
+                category: cat === "all" ? undefined : cat,
+                cursor: undefined,
+                history: undefined,
+              })}
+            >
+              {cat}
+            </Link>
+          </Button>
+        ))}
+      </div>
+
+      <Table className="border rounded-xl overflow-hidden bg-muted">
+        <TableHeader className="bg-muted-foreground">
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Created</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -84,22 +119,19 @@ export default function ProductTable({
         <TableBody>
           {data.length === 0 && (
             <TableRow>
-              <TableCell colSpan={6} className="text-center">
+              <TableCell colSpan={5} className="text-center">
                 No products found
               </TableCell>
             </TableRow>
           )}
 
-          {data.map((p, i) => (
-            <TableRow key={i}>
+          {data.map((p) => (
+            <TableRow key={p.id}>
               <TableCell>{p.name}</TableCell>
               <TableCell>{p.category}</TableCell>
               <TableCell>₹{p.price}</TableCell>
               <TableCell>
                 {new Date(p.created_at).toLocaleDateString("en-GB")}
-              </TableCell>
-              <TableCell>
-                {new Date(p.updated_at).toLocaleDateString("en-GB")}
               </TableCell>
               <TableCell>
                 {p.is_deleted ? "Deleted" : "Active"}
@@ -109,28 +141,15 @@ export default function ProductTable({
         </TableBody>
       </Table>
 
-      {/* PAGINATION */}
-      <div className="flex items-center gap-2 mt-4">
-        <Button
-          disabled={page === 1}
-          onClick={() =>
-            updateQuery({ page: String(page - 1) })
-          }
-        >
-          Prev
+      <div className="flex justify-center gap-2">
+        {/* PREV */}
+        <Button asChild disabled={history.length === 0}>
+          <Link href={getPrevLink()}>Prev</Link>
         </Button>
 
-        <span>
-          Page {page} / {totalPages}
-        </span>
-
-        <Button
-          disabled={page === totalPages}
-          onClick={() =>
-            updateQuery({ page: String(page + 1) })
-          }
-        >
-          Next
+        {/* NEXT */}
+        <Button asChild disabled={!nextCursor}>
+          <Link href={getNextLink()}>Next</Link>
         </Button>
       </div>
     </div>

@@ -5,34 +5,34 @@ export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{
-    page?: string;
+    cursor?: string;
+    category?: string;
     sortBy?: string;
     order?: "asc" | "desc";
   }>;
 }) {
   const params = await searchParams;
 
-  const page = Number(params.page || 1);
-  const sortBy = (params.sortBy || "created_at") as any;
-  const order = (params.order || "desc") as "asc" | "desc";
   const limit = 10;
 
+  const cursor = params.cursor
+    ? JSON.parse(decodeURIComponent(params.cursor))
+    : undefined;
+
+  const category = params.category || undefined;
+
   const result = await getProducts({
-    page,
     limit,
-    sortBy,
-    order,
+    cursor,
+    category,
   });
 
-  const { data, total } = result;
-
   return (
-    <div className="p-6 ">
+    <div className="p-6">
       <ProductTable
-        data={data}
-        limit={limit}
-        page={page}
-        total={total}
+        data={result.data}
+        nextCursor={result.nextCursor}
+        category={category}
       />
     </div>
   );
