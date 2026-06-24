@@ -32,12 +32,14 @@ export default function ProductTable({
   const pathname = usePathname();
   const params = useSearchParams();
 
-  const history = params.get("history")
-    ? JSON.parse(decodeURIComponent(params.get("history")!))
-    : [];
-
+  // ✅ only required fields
   function encodeCursor(cursor: any) {
-    return encodeURIComponent(JSON.stringify(cursor));
+    return encodeURIComponent(
+      JSON.stringify({
+        id: cursor.id,
+        created_at: cursor.created_at,
+      })
+    );
   }
 
   function buildQuery(newParams: Record<string, string | undefined>) {
@@ -54,37 +56,18 @@ export default function ProductTable({
     return `${pathname}?${search.toString()}`;
   }
 
+  // ✅ only next cursor
   function getNextLink() {
     if (!nextCursor) return "#";
 
-    const currentCursor = history.length
-      ? history[history.length - 1]
-      : null;
-
-    const newHistory = currentCursor
-      ? [...history, nextCursor]
-      : [nextCursor];
-
     return buildQuery({
       cursor: encodeCursor(nextCursor),
-      history: encodeURIComponent(JSON.stringify(newHistory)),
-    });
-  }
-
-  function getPrevLink() {
-    if (history.length === 0) return "#";
-
-    const newHistory = history.slice(0, -1);
-    const prevCursor = newHistory[newHistory.length - 1];
-
-    return buildQuery({
-      cursor: prevCursor ? encodeCursor(prevCursor) : undefined,
-      history: encodeURIComponent(JSON.stringify(newHistory)),
     });
   }
 
   return (
     <div className="space-y-4 border-2 rounded-xl p-2">
+      {/* Filters */}
       <div className="flex gap-2 flex-wrap">
         {categories.map((cat) => (
           <Button
@@ -95,8 +78,7 @@ export default function ProductTable({
             <Link
               href={buildQuery({
                 category: cat === "all" ? undefined : cat,
-                cursor: undefined,
-                history: undefined,
+                cursor: undefined, // ✅ reset pagination
               })}
             >
               {cat}
@@ -105,6 +87,7 @@ export default function ProductTable({
         ))}
       </div>
 
+      {/* Table */}
       <Table className="border rounded-xl overflow-hidden bg-muted">
         <TableHeader className="bg-muted-foreground">
           <TableRow>
@@ -141,13 +124,8 @@ export default function ProductTable({
         </TableBody>
       </Table>
 
-      <div className="flex justify-center gap-2">
-        {/* PREV */}
-        <Button asChild disabled={history.length === 0}>
-          <Link href={getPrevLink()}>Prev</Link>
-        </Button>
-
-        {/* NEXT */}
+      {/* Pagination */}
+      <div className="flex justify-center">
         <Button asChild disabled={!nextCursor}>
           <Link href={getNextLink()}>Next</Link>
         </Button>
